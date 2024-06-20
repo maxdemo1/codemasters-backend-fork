@@ -1,27 +1,24 @@
 import Joi from "joi";
-
+const year = new Date().getFullYear();
 export const createAddWaterSchema = Joi.object({
   owner_id: Joi.string().min(2).max(40).required(),
   amount: Joi.number().min(0.05).max(12).required(),
-});
-// for future
-/* owner_id: Joi.string()
-    .min(2)
-    .max(20)
-    .required()
-    .pattern(/^[a-zA-Z0-9 ]*$/),
   year: Joi.number()
     .less(year + 1)
     .required()
-    .greater(year - 5),
+    .greater(year - 1),
   month: Joi.number()
-    .less(month + 1)
+    .less(12)
     .required()
-    .greater(0),
+    .greater(0 - 1),
   time: Joi.string()
-    .min(6)
-    .required()
-    .message(
-     
-    ),
-  amount: Joi.number().min(0.1).max(12),*/
+    .pattern(
+      /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
+      "HH:MM:SS format - example 00:16:06"
+    )
+    .messages({
+      "string.pattern.base":
+        "Time must be in the format HH:MM:SS, e.g., 00:16:06",
+    }),
+  amount: Joi.number().min(0.1).max(12),
+});
