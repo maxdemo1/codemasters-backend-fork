@@ -29,12 +29,11 @@ export const checkToken = (req, res, next) => {
   //         return next(HttpError(401, "Not authorized"));
   //       }
 
-  //       req.user = { id: user.id, email: user.email };
+  //       req.body.owner_id = user.id;
 
   //       next();
   //     } catch (error) {
-  //       console.log(error);
-  //       next(HttpError(500));
+  //       next(errorHelper(error));
   //     }
   //   });
 };
