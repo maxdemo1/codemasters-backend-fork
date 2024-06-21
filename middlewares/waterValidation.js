@@ -1,5 +1,5 @@
 import HttpError from "../helpers/HttpError.js";
-import waterValidationSchemas from "../validation/water.js";
+import waterValidationSchemas from "../schemas/waterSchemas.js";
 // ID користувача в req.body з'являється в мідлварі для перевірки токена
 const addWaterValidation = (req, res, next) => {
   const { error, _ } = waterValidationSchemas.addWaterSchema.validate({
