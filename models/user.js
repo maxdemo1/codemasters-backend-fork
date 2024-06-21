@@ -12,7 +12,7 @@ const contactSchema = new mongoose.Schema(
     unique: true,
   },
         passwordConform: {
-            type: String,
+            type: Number,
             required: [true, 'Password must be confirmed']
         },
         weight: {
@@ -26,7 +26,10 @@ const contactSchema = new mongoose.Schema(
             type: String,
         },
         dailyWaterRate: {
-            type: String,
+            type: Number,
+    },
+    name: {
+          type: String,
         },
   token: {
     type: String,
