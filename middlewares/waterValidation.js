@@ -56,9 +56,38 @@ const deleteWaterValidation = (req, res, next) => {
   }
 };
 
+const getByDayValidation = (req, res, next) => {
+  if (!req.params.owner_id) {
+    return next(HttpError(400, "Invalid owner id"));
+  }
+  const { error, _ } = waterValidationSchemas.getByDay.validate({
+    ...req.params,
+  });
+  if (error === undefined) {
+    return next();
+  }
+
+  next(HttpError(400, error.message));
+};
+const getByMonthValidation = (req, res, next) => {
+  if (!req.params.owner_id) {
+    return next(HttpError(400, "Invalid owner id"));
+  }
+  const { error, _ } = waterValidationSchemas.getByMonth.validate({
+    ...req.params,
+  });
+  if (error === undefined) {
+    return next();
+  }
+
+  next(HttpError(400, error.message));
+};
+
 const waterValidationServices = {
   addWaterValidation,
   editWaterValidation,
   deleteWaterValidation,
+  getByDayValidation,
+  getByMonthValidation,
 };
 export default waterValidationServices;

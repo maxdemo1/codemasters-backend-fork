@@ -25,4 +25,19 @@ waterRouter.delete(
   waterValidationServices.deleteWaterValidation,
   waterServices.deleteWaterServing
 );
+
+waterRouter.get(
+  "/consumption_day/:day/month/:month/year/:year/",
+  checkToken,
+  waterValidationServices.getByDayValidation,
+  waterServices.waterConsumptionByDay
+);
+
+waterRouter.get(
+  "/consumption_month/:month/year/:year/",
+  checkToken,
+  waterValidationServices.getByMonthValidation,
+  waterServices.waterConsumptionByMonth
+);
+
 export default waterRouter;

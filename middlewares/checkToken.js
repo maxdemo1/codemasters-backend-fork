@@ -4,6 +4,7 @@ import HttpError from "../helpers/HttpError.js";
 
 export const checkToken = (req, res, next) => {
   console.log("зараз валідація токена закоментована");
+  req.params.owner_id = req.headers.authorization;
   next();
   //   if (req.headers.authorization === undefined) {
   //     return next(HttpError(401, "Not authorized"));

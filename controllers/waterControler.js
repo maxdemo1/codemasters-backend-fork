@@ -1,10 +1,10 @@
 import { errorHelper } from "../helpers/errorHelper.js";
+import { getDaysInMonth } from "../helpers/getDaysInMonth.js";
 import waterModel from "../models/water.js";
 
 const addWaterServing = async (req, res, next) => {
   try {
     const response = await waterModel.create({ ...req.body });
-
     res.send({ data: response });
   } catch (error) {
     next(errorHelper(error));
@@ -50,5 +50,42 @@ const deleteWaterServing = async (req, res, next) => {
   }
 };
 
-const waterServices = { addWaterServing, editWaterServing, deleteWaterServing };
+const waterConsumptionByDay = async (req, res, next) => {
+  try {
+    const { owner_id, year, month, day } = req.params;
+    const response = await waterModel.find({ owner_id, year, month, day });
+    if (response.length === 0) {
+      return res.status(404).json({ message: "No data for this queries" });
+    }
+    res.send({ data: response });
+  } catch (error) {
+    next(errorHelper(error));
+  }
+};
+
+const waterConsumptionByMonth = async (req, res, next) => {
+  try {
+    const { owner_id, year, month } = req.params;
+    const data = await waterModel.find({ owner_id, year, month });
+    const days = getDaysInMonth(year, month);
+    const response = { days };
+    for (let key = 1; key <= days; key++) {
+      response[key] = [];
+    }
+    data.forEach((element) => {
+      response[element.day].push(element);
+    });
+
+    res.send({ data: response });
+  } catch (error) {
+    next(errorHelper(error));
+  }
+};
+const waterServices = {
+  addWaterServing,
+  editWaterServing,
+  deleteWaterServing,
+  waterConsumptionByDay,
+  waterConsumptionByMonth,
+};
 export default waterServices;

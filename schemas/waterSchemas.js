@@ -31,11 +31,32 @@ const validateIdSchema = Joi.object({
   _id: Joi.string().hex().length(24).required(),
 });
 
+const getByDay = Joi.object({
+  owner_id: Joi.string().hex().length(24).required(),
+  year: Joi.number().less(2026).required().greater(2022),
+  month: Joi.number()
+    .less(12)
+    .required()
+    .greater(0 - 1),
+  day: Joi.number().less(32).greater(0).required(),
+});
+
+const getByMonth = Joi.object({
+  owner_id: Joi.string().hex().length(24).required(),
+  year: Joi.number().less(2026).required().greater(2022),
+  month: Joi.number()
+    .less(12)
+    .required()
+    .greater(0 - 1),
+});
+
 const waterValidationSchemas = {
   addWaterSchema,
   editWaterSchema,
   validateIdSchema,
   deleteWaterSchema,
+  getByDay,
+  getByMonth,
 };
 
 export default waterValidationSchemas;
