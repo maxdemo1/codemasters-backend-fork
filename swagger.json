@@ -1,0 +1,436 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Water Tracker API",
+    "version": "1.0.0",
+    "description": "Water Tracker REST API documentation",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Registration/Login/Logout endpoints"
+    },
+    {
+      "name": "User",
+      "description": "User CRUD endpoints"
+    },
+    {
+      "name": "Water",
+      "description": "Water CRUD endpoints"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register a new user",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegistration"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDataResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "409": {
+            "description": "Email in use"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login user",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserLogin"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Email or password wrong"
+          },
+          "403": {
+            "description": "User is not verified yet"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "summary": "Logout user",
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Email or password wrong"
+          },
+          "403": {
+            "description": "User is not verified yet"
+          }
+        }
+      }
+    },
+    "/users/current": {
+      "get": {
+        "summary": "Get current user",
+        "description": "Get current user",
+        "tags": [
+          "User"
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCurrentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "summary": "Get current user",
+        "description": "Get current user",
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDataResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Change User data",
+        "description": "Change User data",
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "User name",
+                    "example": "Alex"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email",
+                    "example": "alex@example.com"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "description": "Gender",
+                    "enum": [
+                      "male",
+                      "female",
+                      "other"
+                    ],
+                    "example": "male"
+                  },
+                  "weight": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Weight",
+                    "example": 75.5
+                  },
+                  "active_time": {
+                    "type": "integer",
+                    "description": "Activity time in minutes",
+                    "example": 60
+                  },
+                  "daily_water_intake": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Daily water limit",
+                    "example": 2.5
+                  },
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Avatar image"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserUpdateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserRegistration": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Alex",
+            "description": "User name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "Alex@example.com",
+            "description": "User email address"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "qwerty",
+            "description": "User password"
+          }
+        },
+        "required": ["name", "email", "password"]
+      },
+      "UserLogin": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "alex@example.com",
+            "description": "User email address"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "qwerty",
+            "description": "User password"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "UserDataResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "example": "ggghbGciOiJIUzI1NiIsInR5cCI6Ikpfff..."
+          },
+          "refreshToken": {
+            "example": "gggbGciOiJIUzI1NiIsInR5cCI6Ikpfff..."
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "44226bed73c29e33133f0266"
+              },
+              "email": {
+                "type": "string",
+                "example": "alex@example.com"
+              },
+              "name": {
+                "type": "string",
+                "example": "Alex"
+              },
+              "avatarURL": {
+                "type": "string",
+                "example": "//www.gravatar.com/avatar/0000000000000"
+              }
+            }
+          }
+        }
+      },
+      "UserCurrentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "00226b9a73c29e33133f0200"
+          },
+          "email": {
+            "type": "string",
+            "example": "alex@example.com"
+          },
+          "name": {
+            "type": "string",
+            "example": "Alex"
+          },
+          "avatarURL": {
+            "type": "string",
+            "example": "//www.gravatar.com/avatar/000000000000000000"
+          },
+          "themeId": {
+            "type": "string",
+            "example": "7725452c0713afbc276181f8"
+          }
+        }
+      },
+      "UserUpdateResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "99226b9a73c29e33133f0299"
+          },
+          "email": {
+            "type": "string",
+            "example": "alex@example.com"
+          },
+          "name": {
+            "type": "string",
+            "example": "Alex"
+          },
+          "avatarURL": {
+            "type": "string",
+            "example": "//www.gravatar.com/avatar/0000000000000000000000"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "example": [
+              {
+                "403": "Your current password is not valid"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}
