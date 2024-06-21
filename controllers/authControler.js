@@ -1,6 +1,7 @@
-import User from "../models/user";
+import User from "../models/user.js";
 
 import bcrypt from "bcryptjs";
+import cripto from "node:crypto";
 
 
 
@@ -8,8 +9,8 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 const registerUser = async (req, res, next) => {
     try {
-        const { email, password, passwordConform } = req.body;
-        if (password !== passwordConform) {
+        const { email, password, password_conform } = req.body;
+        if (password !== password_conform) {
             return res.status(400).json({message: "Passwords dont match. Enter correct!"})
         }
 
@@ -17,9 +18,10 @@ const registerUser = async (req, res, next) => {
         if (user !== null) {
             return res.status(409).send({message: "Email already exist"})
         }
+        const verificationToken = cripto.randomUUID();
 
         const passwordHash = await bcrypt.hash(password, 10)
-        const newUser = await User.create({ email, password: passwordHash })
+        const newUser = await User.create({ email, password: passwordHash, verificationToken })
         /*Тут має бути граватар */
         /*Тут має бути верифікація емейла */
         res.status(201).json({email: newUser.email, message: "New user is born"})

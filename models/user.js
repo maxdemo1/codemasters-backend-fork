@@ -11,16 +11,13 @@ const contactSchema = new mongoose.Schema(
     required: [true, 'Email is required'],
     unique: true,
   },
-        passwordConform: {
-            type: Number,
-            required: [true, 'Password must be confirmed']
-        },
+  
         weight: {
             type: String,
         },
         gender: {
             type: String,
-            enum: ['male', 'female']
+            enum: ['male', 'female'],
         },
         activeTimeSport: {
             type: String,
