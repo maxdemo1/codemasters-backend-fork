@@ -117,7 +117,12 @@
           "403": {
             "description": "User is not verified yet"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/users/current": {
@@ -295,7 +300,12 @@
           "401": { "description": "Unauthorized" },
           "404": { "description": "Not found" },
           "500": { "description": "Internal error" }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/water/edit/{id}": {
@@ -336,7 +346,12 @@
           "401": { "description": "Unauthorized" },
           "404": { "description": "Not found" },
           "500": { "description": "Internal error" }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/water/delete/{id}": {
@@ -363,7 +378,12 @@
           "401": { "description": "Unauthorized" },
           "404": { "description": "Not found" },
           "500": { "description": "Internal error" }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/water/consumption_day/{day}/month/{month}/year/{year}/": {
@@ -411,7 +431,12 @@
           "401": { "description": "Unauthorized" },
           "404": { "description": "Not found" },
           "500": { "description": "Internal error" }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/water/consumption_month/{month}/year/{year}/": {
@@ -451,7 +476,12 @@
           "401": { "description": "Unauthorized" },
           "404": { "description": "Not found" },
           "500": { "description": "Internal error" }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     }
   },
@@ -824,10 +854,5 @@
         "bearerFormat": "JWT"
       }
     }
-  },
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ]
+  }
 }
