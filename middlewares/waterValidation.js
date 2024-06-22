@@ -6,7 +6,6 @@ const addWaterValidation = (req, res, next) => {
     ...req.body,
   });
   if (error === undefined) {
-    console.log("object");
     return next();
   }
 
@@ -26,7 +25,6 @@ const editWaterValidation = (req, res, next) => {
 };
 
 const deleteWaterValidation = (req, res, next) => {
-  console.log(req.params.id);
   const { error, _ } = waterValidationSchemas.deleteWaterSchema.validate({
     id: req.params.id,
   });

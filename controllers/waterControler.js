@@ -76,7 +76,7 @@ const waterConsumptionByMonth = async (req, res, next) => {
     const { year, month } = req.params;
     const owner_id = req.user.uid;
     const data = await waterModel.find({ owner_id, year, month });
-    const days = getDaysInMonth(year, month);
+    const days = getDaysInMonth(Number(year), Number(month));
     const response = { days };
     for (let key = 1; key <= days; key++) {
       response[key] = [];

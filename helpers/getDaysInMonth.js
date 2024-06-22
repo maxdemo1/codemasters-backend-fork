@@ -1,4 +1,3 @@
-export const getDaysInMonth = (year, month) =>
-  new Date(year, month + 1, 0).getDate();
-
-getDaysInMonth(2023, 10);
+export const getDaysInMonth = (year, month) => {
+  return new Date(year, month + 1, 0).getDate();
+};
