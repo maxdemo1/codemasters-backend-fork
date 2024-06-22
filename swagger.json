@@ -105,7 +105,7 @@
         "summary": "Logout user",
         "tags": ["Auth"],
         "responses": {
-          "200": {
+          "204": {
             "description": "Ok"
           },
           "400": {
@@ -155,7 +155,7 @@
         "parameters": [
           {
             "name": "id",
-            "description": "Months counting starts from 0",
+            "description": "User id",
             "in": "path",
             "required": true,
             "schema": {
@@ -191,6 +191,7 @@
         "parameters": [
           {
             "name": "id",
+            "description": "User id",
             "in": "path",
             "required": true,
             "schema": {
