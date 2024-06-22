@@ -1,5 +1,5 @@
 import HttpError from "../helpers/HttpError.js";
-import waterValidationSchemas from "../validation/water.js";
+import waterValidationSchemas from "../schemas/waterSchemas.js";
 // ID користувача в req.body з'являється в мідлварі для перевірки токена
 const addWaterValidation = (req, res, next) => {
   const { error, _ } = waterValidationSchemas.addWaterSchema.validate({
@@ -56,9 +56,38 @@ const deleteWaterValidation = (req, res, next) => {
   }
 };
 
+const getByDayValidation = (req, res, next) => {
+  if (!req.params.owner_id) {
+    return next(HttpError(400, "Invalid owner id"));
+  }
+  const { error, _ } = waterValidationSchemas.getByDay.validate({
+    ...req.params,
+  });
+  if (error === undefined) {
+    return next();
+  }
+
+  next(HttpError(400, error.message));
+};
+const getByMonthValidation = (req, res, next) => {
+  if (!req.params.owner_id) {
+    return next(HttpError(400, "Invalid owner id"));
+  }
+  const { error, _ } = waterValidationSchemas.getByMonth.validate({
+    ...req.params,
+  });
+  if (error === undefined) {
+    return next();
+  }
+
+  next(HttpError(400, error.message));
+};
+
 const waterValidationServices = {
   addWaterValidation,
   editWaterValidation,
   deleteWaterValidation,
+  getByDayValidation,
+  getByMonthValidation,
 };
 export default waterValidationServices;
