@@ -414,7 +414,7 @@
         }
       }
     },
-    "/water/consumption_/month/{month}/year/{year}/": {
+    "/water/consumption_month/{month}/year/{year}/": {
       "get": {
         "summary": "Get water reception by month",
         "description": "Get water reception by month",
@@ -664,6 +664,11 @@
             "type": "number",
             "example": 0,
             "description": "User password"
+          },
+          "day": {
+            "type": "number",
+            "example": 1,
+            "description": "Confirm password"
           },
           "time": {
             "type": "string",

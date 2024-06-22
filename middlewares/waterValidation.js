@@ -6,6 +6,7 @@ const addWaterValidation = (req, res, next) => {
     ...req.body,
   });
   if (error === undefined) {
+    console.log("object");
     return next();
   }
 
