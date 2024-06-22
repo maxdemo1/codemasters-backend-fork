@@ -51,7 +51,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserDataResponse"
+                  "$ref": "#/components/schemas/UserRegistrationResponse"
                 }
               }
             }
@@ -87,7 +87,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserLogin"
+                  "$ref": "#/components/schemas/UserLoginResponse"
                 }
               }
             }
@@ -297,7 +297,7 @@
           "email": {
             "type": "string",
             "format": "email",
-            "example": "Alex@example.com",
+            "example": "alex@example.com",
             "description": "User email address"
           },
           "password": {
@@ -305,9 +305,41 @@
             "format": "password",
             "example": "qwerty",
             "description": "User password"
+          },
+          "password_conform": {
+            "type": "string",
+            "format": "password",
+            "example": "qwerty",
+            "description": "Confirm password"
           }
         },
         "required": ["name", "email", "password"]
+      },
+      "UserRegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "44226bed73c29e33133f0266"
+              },
+              "email": {
+                "type": "string",
+                "example": "alex@example.com"
+              },
+              "name": {
+                "type": "string",
+                "example": "Alex"
+              },
+              "avatarURL": {
+                "type": "string",
+                "example": "//www.gravatar.com/avatar/0000000000000"
+              }
+            }
+          }
+        }
       },
       "UserLogin": {
         "type": "object",
@@ -327,6 +359,31 @@
         },
         "required": ["email", "password"]
       },
+      "UserLoginResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "example": "ggghbGciOiJIUzI1NiIsInR5cCI6Ikpfff..."
+          },
+          "refreshToken": {
+            "example": "gggbGciOiJIUzI1NiIsInR5cCI6Ikpfff..."
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "44226bed73c29e33133f0266"
+              },
+              "email": {
+                "type": "string",
+                "example": "alex@example.com"
+              }
+            }
+          }
+        }
+      },
+
       "UserDataResponse": {
         "type": "object",
         "properties": {

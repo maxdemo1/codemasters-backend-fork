@@ -1,17 +1,20 @@
 import mongoose from "mongoose";
 
 const contactSchema = new mongoose.Schema(
-  {
-  password: {
-    type: String,
-    required: [true, 'Password is required'],
-  },
-  email: {
-    type: String,
-    required: [true, 'Email is required'],
-    unique: true,
-  },
-  
+    {
+        name: {
+            type: String,
+            required: [true, 'User name is required'],
+        },
+        password: {
+            type: String,
+            required: [true, 'Password is required'],
+        },
+        email: {
+            type: String,
+            required: [true, 'Email is required'],
+            unique: true,
+        },
         weight: {
             type: String,
         },
@@ -24,26 +27,23 @@ const contactSchema = new mongoose.Schema(
         },
         dailyWaterRate: {
             type: Number,
-    },
-    name: {
-          type: String,
         },
-  token: {
-    type: String,
-    default: null,
-    },
-    avatarURL: String,
-  verify: {
-    type: Boolean,
-    default: false,
-  },
-  verificationToken: {
-    type: String,
-    required: [true, 'Verify token is required'],
-  },
-}, {
-    versionKey: false
-  }
+        token: {
+            type: String,
+            default: null,
+        },
+        avatarURL: String,
+        verify: {
+            type: Boolean,
+            default: false,
+        },
+        verificationToken: {
+            type: String,
+            required: [true, 'Verify token is required'],
+        },
+    }, {
+        versionKey: false
+    }
 );
 
 export default mongoose.model("User", contactSchema);

@@ -10,11 +10,11 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const JWT_REFRESH_TOKEN = process.env.JWT_REFRESH_TOKEN;
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
 const registerUser = async (req, res, next) => {
     try {
-        const { email, password, password_conform } = req.body;
+        const { name, email, password, password_conform } = req.body;
         if (password !== password_conform) {
             return res.status(400).json({message: "Passwords dont match. Enter correct!"})
         }
@@ -26,7 +26,7 @@ const registerUser = async (req, res, next) => {
         const verificationToken = cripto.randomUUID();
 
         const passwordHash = await bcrypt.hash(password, 10)
-        const newUser = await User.create({ email, password: passwordHash, verificationToken })
+        const newUser = await User.create({ name, email, password: passwordHash, verificationToken })
         /*Тут має бути граватар */
         /*Тут має бути верифікація емейла */
         res.status(201).json({email: newUser.email, message: "New user is born"})
@@ -61,7 +61,7 @@ const login = async (req, res, next) => {
   
   const refreshToken = jwt.sign(
     { uid: user._id, sid: newSession._id },
-    JWT_REFRESH_TOKEN,
+      JWT_REFRESH_SECRET,
     { expiresIn: "22h" }
         );
         
@@ -95,37 +95,6 @@ const logout = async (req, res, next) => {
         next(error)
     }
 
-}
-
-
-const getAllUsers = async (req, res, next) => {
-    try {
-        const users = await User.find();
-        res.status(200).json(users);
-    } catch (error) {
-        next(error);
-    }
-};
-
-
-const currentUser = async (req, res, next) => {
-    try {
-        const user = req.user;
-        /*Тут має бути перевірка на авторизацію */
-        const userProfile = {
-            name: user.name,
-            email: user.email,
-            gender: user.gender,
-            weight: user.weight,
-            activeTimeSport: user.activeTimeSport,
-            dailyWaterRate: user.dailyWaterRate,
-            avatarURL: user.avatarURL,
-        }
-        res.status(200).json(userProfile);
-    }
-    catch (error) {
-        next(error);
-        }
 }
 
 
@@ -182,5 +151,5 @@ const currentUser = async (req, res, next) => {
 // }
 
 
-const userServices = { registerUser, login, logout, currentUser, getAllUsers };
+const userServices = { registerUser, login, logout };
 export default userServices;
