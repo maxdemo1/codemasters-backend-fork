@@ -1,11 +1,16 @@
 import User from "../models/user.js";
 
+import Session from "../models/session.js";
+
 import bcrypt from "bcryptjs";
 import cripto from "node:crypto";
+import jwt from "jsonwebtoken";
 
 
 
 const JWT_SECRET = process.env.JWT_SECRET;
+
+const JWT_REFRESH_TOKEN = process.env.JWT_REFRESH_TOKEN;
 
 const registerUser = async (req, res, next) => {
     try {
@@ -32,62 +37,122 @@ const registerUser = async (req, res, next) => {
 }
 
 
-const loginUser = async (req, res, next) => {
-    try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
-        
-        if (user === null) {
-            return res.status(401).send({message: "Email or password is wrong"})
-        }
 
-        const passwordCompare = await bcrypt.compare(password, user.password);
+
+const login = async (req, res, next) => {
+    try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+
+    if (user === null) {
+            return res.status(401).send({message: "Email or password is wrong"})
+    }
+    const passwordCompare = await bcrypt.compare(password, user.password);
         if (passwordCompare === false) {
             return res.status(401).send({message: "Email or password is wrong"})
         }
+    const newSession = await Session.create({ uid: user._id });
+  
+  const accessToken = jwt.sign(
+    { uid: user._id, sid: newSession._id },
+    JWT_SECRET,
+    { expiresIn: "22h" }
+  );
+  
+  const refreshToken = jwt.sign(
+    { uid: user._id, sid: newSession._id },
+    JWT_REFRESH_TOKEN,
+    { expiresIn: "22h" }
+        );
+        
 
-        /*Тут має бути перевірка верифікації */
+    /*Цей код зберігає аксес токен до бази. Коментуйте цю частину якщо не бажаєте зберігати. Зроблено для перевірки */
+        user.token = accessToken;
+        await user.save();
+    /*Цей код зберігає аксес токен до бази. Коментуйте цю частину якщо не бажаєте зберігати. Зроблено для перевірки */
+        
 
-        /*Це тимчасовий варіант - буде доданий рефреш токен */
-        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "22h" })
-        await User.findByIdAndUpdate(user._id, { token });
-        res.status(200).json({token, email: user.email,})
+       return res.status(200).json({accessToken, refreshToken, sid: newSession._id, email: user.email,})
     }
     catch(error) {
         next(error)
     }
 }
 
-
- const logoutUser = async (req, res, next) => {
+const logout = async (req, res, next) => {
     try {
-        const { _id } = req.user;
-        await User.findByIdAndUpdate(_id, { token: null });
-        res.status(204).json({});
+        const { uid, sid } = req.user
+        await Session.findByIdAndDelete(sid);
+
+        /*Цей рядок видаляє токен з бази - закоментуйте його якщо коментувал код в login. Зроблено для перевірки */
+        await User.findByIdAndUpdate(uid, { token: null });
+        /*Цей рядок видаляє токен з бази - закоментуйте його якщо коментувал код в login. Зроблено для перевірки */
+        /*Тут могла бути ваша реклама */
+
+        res.status(204).json({ message: "Successfully logged out" });
+    }
+    catch(error) {
+        next(error)
+    }
+
+}
+
+
+const getAllUsers = async (req, res, next) => {
+    try {
+        const users = await User.find();
+        res.status(200).json(users);
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+const currentUser = async (req, res, next) => {
+    try {
+        const user = req.user;
+        /*Тут має бути перевірка на авторизацію */
+        const userProfile = {
+            name: user.name,
+            email: user.email,
+            gender: user.gender,
+            weight: user.weight,
+            activeTimeSport: user.activeTimeSport,
+            dailyWaterRate: user.dailyWaterRate,
+            avatarURL: user.avatarURL,
+        }
+        res.status(200).json(userProfile);
     }
     catch (error) {
         next(error);
         }
 }
 
-// const currentUser = async (req, res, next) => {
+
+// const loginUser = async (req, res, next) => {
 //     try {
-//         const user = req.user;
-//         /*Тут має бути перевірка на авторизацію */
-//         const userProfile = {
-//             name: user.name,
-//             email: user.email,
-//             gender: user.gender,
-//             weight: user.weight,
-//             activeTimeSport: user.activeTimeSport,
-//             dailyWaterRate: user.dailyWaterRate,
-//             avatarURL: user.avatarURL,
+//         const { email, password } = req.body;
+//         const user = await User.findOne({ email });
+        
+//         if (user === null) {
+//             return res.status(401).send({message: "Email or password is wrong"})
 //         }
-//         res.status(200).json(userProfile);
+
+//         const passwordCompare = await bcrypt.compare(password, user.password);
+//         if (passwordCompare === false) {
+//             return res.status(401).send({message: "Email or password is wrong"})
+//         }
+
+//         /*Тут має бути перевірка верифікації */
+
+//         /*Це тимчасовий варіант - буде доданий рефреш токен */
+//         const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "22h" })
+//         await User.findByIdAndUpdate(user._id, { token });
+//         res.status(200).json({token, email: user.email,})
 //     }
-//     catch (error) {
-//         next(error);
-//         }
+//     catch(error) {
+//         next(error)
+//     }
 // }
 
 // const updateUser = async (req, res, next) => {
@@ -117,5 +182,5 @@ const loginUser = async (req, res, next) => {
 // }
 
 
-const userServices = { registerUser, loginUser, logoutUser };
+const userServices = { registerUser, login, logout, currentUser, getAllUsers };
 export default userServices;

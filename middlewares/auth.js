@@ -1,4 +1,4 @@
-import User from "../models/users.js";
+import User from "../models/user.js";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -23,14 +23,14 @@ export const auth = async (req, res, next) => {
     }
 
     try {
-        const { id } = jwt.verify(token, JWT_SECRET);
-        const user = await User.findById(id);
+        const { uid, sid } = jwt.verify(token, JWT_SECRET);
+        const user = await User.findById(uid);
 
-        if (!user || !user.token || user.token !== token) {
+        if (!user) {
             return res.status(401).send({ message: "Not authorized" });
         }
 
-        req.user = user;
+        req.user = {uid: user._id, sid};
         next();
     } catch (error) {
         console.error("Error verifying token:", error);
