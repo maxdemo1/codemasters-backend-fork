@@ -32,9 +32,7 @@
     "/auth/register": {
       "post": {
         "summary": "Register a new user",
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "requestBody": {
           "required": true,
           "content": {
@@ -68,9 +66,7 @@
     "/auth/login": {
       "post": {
         "summary": "Login user",
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "requestBody": {
           "required": true,
           "content": {
@@ -107,9 +103,7 @@
     "/auth/logout": {
       "post": {
         "summary": "Logout user",
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "responses": {
           "200": {
             "description": "Ok"
@@ -130,9 +124,7 @@
       "get": {
         "summary": "Get current user",
         "description": "Get current user",
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "responses": {
           "200": {
             "description": "Ok",
@@ -154,9 +146,7 @@
       "get": {
         "summary": "Get current user",
         "description": "Get current user",
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "parameters": [
           {
             "name": "id",
@@ -191,9 +181,7 @@
       "put": {
         "summary": "Change User data",
         "description": "Change User data",
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "parameters": [
           {
             "name": "id",
@@ -224,11 +212,7 @@
                   "gender": {
                     "type": "string",
                     "description": "Gender",
-                    "enum": [
-                      "male",
-                      "female",
-                      "other"
-                    ],
+                    "enum": ["male", "female", "other"],
                     "example": "male"
                   },
                   "weight": {
@@ -281,6 +265,193 @@
             "bearerAuth": []
           }
         ]
+      }
+    },
+    "/water/add": {
+      "post": {
+        "summary": "Add water reception",
+        "description": "Add water reception",
+        "tags": ["Water"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddWater"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WaterResponse" }
+              }
+            }
+          },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not found" },
+          "500": { "description": "Internal error" }
+        }
+      }
+    },
+    "/water/edit/{id}": {
+      "patch": {
+        "summary": "Edit water reception",
+        "description": "Edit water reception",
+        "tags": ["Water"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditWater"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WaterResponse" }
+              }
+            }
+          },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not found" },
+          "500": { "description": "Internal error" }
+        }
+      }
+    },
+    "/water/delete/{id}": {
+      "delete": {
+        "summary": "Delete water reception",
+        "description": "Delete water reception",
+        "tags": ["Water"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not found" },
+          "500": { "description": "Internal error" }
+        }
+      }
+    },
+    "/water/consumption_day/{day}/month/{month}/year/{year}/": {
+      "get": {
+        "summary": "Get water reception by month",
+        "description": "Get water reception by day",
+        "tags": ["Water"],
+        "parameters": [
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "month",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "day",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WaterResponseDay" }
+              }
+            }
+          },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not found" },
+          "500": { "description": "Internal error" }
+        }
+      }
+    },
+    "/water/consumption_/month/{month}/year/{year}/": {
+      "get": {
+        "summary": "Get water reception by month",
+        "description": "Get water reception by month",
+        "tags": ["Water"],
+        "parameters": [
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "month",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WaterResponseMonth" }
+              }
+            }
+          },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not found" },
+          "500": { "description": "Internal error" }
+        }
       }
     }
   },
@@ -475,8 +646,172 @@
             ]
           }
         }
+      },
+      "AddWater": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 0.5,
+            "description": "Amount of water"
+          },
+          "year": {
+            "type": "number",
+            "example": 2024,
+            "description": "Year"
+          },
+          "month": {
+            "type": "number",
+            "example": 0,
+            "description": "User password"
+          },
+          "time": {
+            "type": "string",
+            "example": "00:16:06",
+            "description": "Confirm password"
+          }
+        },
+        "required": ["amount", "year", "month", "time"]
+      },
+
+      "EditWater": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 0.5,
+            "description": "Amount of water"
+          }
+        },
+        "required": ["amount"]
+      },
+      "DeleteWater": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 0.5,
+            "description": "Amount of water"
+          }
+        },
+        "required": ["amount"]
+      },
+      "WaterResponse": {
+        "type": "object",
+        "properties": {
+          "owner_id": {
+            "type": "string",
+            "example": "66755b1814ecb34b3d42a997"
+          },
+          "amount": {
+            "type": "number",
+            "example": 0.5
+          },
+          "year": {
+            "type": "number",
+            "example": "2024"
+          },
+          "month": {
+            "type": "number",
+            "example": 5
+          },
+          "day": {
+            "type": "number",
+            "example": 22
+          },
+          "time": {
+            "type": "string",
+            "example": "00:16:06"
+          },
+          "_id": {
+            "type": "string",
+            "example": "6676eca999b85a80faf5665d"
+          }
+        }
+      },
+      "WaterResponseDay": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "owner_id": {
+              "type": "string",
+              "example": "66755b1814ecb34b3d42a997"
+            },
+            "amount": {
+              "type": "number",
+              "example": 0.5
+            },
+            "year": {
+              "type": "number",
+              "example": 2024
+            },
+            "month": {
+              "type": "number",
+              "example": 5
+            },
+            "day": {
+              "type": "number",
+              "example": 22
+            },
+            "time": {
+              "type": "string",
+              "example": "00:16:06"
+            },
+            "_id": {
+              "type": "string",
+              "example": "6676eca999b85a80faf5665d"
+            }
+          }
+        }
+      },
+      "WaterResponseMonth": {
+        "type": "object",
+        "properties": {
+          "days": {
+            "type": "number",
+            "example": 31
+          },
+          "1": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "owner_id": {
+                  "type": "string",
+                  "example": "66755b1814ecb34b3d42a997"
+                },
+                "amount": {
+                  "type": "number",
+                  "example": 0.5
+                },
+                "year": {
+                  "type": "number",
+                  "example": 2024
+                },
+                "month": {
+                  "type": "number",
+                  "example": 5
+                },
+                "day": {
+                  "type": "number",
+                  "example": 22
+                },
+                "time": {
+                  "type": "string",
+                  "example": "00:16:06"
+                },
+                "_id": {
+                  "type": "string",
+                  "example": "6676eca999b85a80faf5665d"
+                }
+              }
+            }
+          }
+        }
       }
     },
+
     "securitySchemes": {
       "bearerAuth": {
         "type": "http",
