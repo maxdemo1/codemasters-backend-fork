@@ -155,6 +155,7 @@
         "parameters": [
           {
             "name": "id",
+            "description": "Months counting starts from 0",
             "in": "path",
             "required": true,
             "schema": {
@@ -316,6 +317,7 @@
         "parameters": [
           {
             "name": "id",
+            "description": "Water item database id",
             "in": "path",
             "required": true,
             "schema": {
@@ -362,6 +364,7 @@
         "parameters": [
           {
             "name": "id",
+            "description": "Water item database id",
             "in": "path",
             "required": true,
             "schema": {
@@ -402,6 +405,7 @@
           },
           {
             "name": "month",
+            "description": "Months counting starts from 0",
             "in": "path",
             "required": true,
             "schema": {
@@ -455,6 +459,7 @@
           },
           {
             "name": "month",
+            "description": "Months counting starts from 0",
             "in": "path",
             "required": true,
             "schema": {
@@ -734,68 +739,78 @@
       "WaterResponse": {
         "type": "object",
         "properties": {
-          "owner_id": {
-            "type": "string",
-            "example": "66755b1814ecb34b3d42a997"
-          },
-          "amount": {
-            "type": "number",
-            "example": 0.5
-          },
-          "year": {
-            "type": "number",
-            "example": "2024"
-          },
-          "month": {
-            "type": "number",
-            "example": 5
-          },
-          "day": {
-            "type": "number",
-            "example": 22
-          },
-          "time": {
-            "type": "string",
-            "example": "00:16:06"
-          },
-          "_id": {
-            "type": "string",
-            "example": "6676eca999b85a80faf5665d"
+          "data": {
+            "type": "object",
+            "properties": {
+              "owner_id": {
+                "type": "string",
+                "example": "66755b1814ecb34b3d42a997"
+              },
+              "amount": {
+                "type": "number",
+                "example": 0.5
+              },
+              "year": {
+                "type": "number",
+                "example": "2024"
+              },
+              "month": {
+                "type": "number",
+                "example": 5
+              },
+              "day": {
+                "type": "number",
+                "example": 22
+              },
+              "time": {
+                "type": "string",
+                "example": "00:16:06"
+              },
+              "_id": {
+                "type": "string",
+                "example": "6676eca999b85a80faf5665d"
+              }
+            }
           }
         }
       },
       "WaterResponseDay": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "owner_id": {
-              "type": "string",
-              "example": "66755b1814ecb34b3d42a997"
-            },
-            "amount": {
-              "type": "number",
-              "example": 0.5
-            },
-            "year": {
-              "type": "number",
-              "example": 2024
-            },
-            "month": {
-              "type": "number",
-              "example": 5
-            },
-            "day": {
-              "type": "number",
-              "example": 22
-            },
-            "time": {
-              "type": "string",
-              "example": "00:16:06"
-            },
-            "_id": {
-              "type": "string",
-              "example": "6676eca999b85a80faf5665d"
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "owner_id": {
+                  "type": "string",
+                  "example": "66755b1814ecb34b3d42a997"
+                },
+                "amount": {
+                  "type": "number",
+                  "example": 0.5
+                },
+                "year": {
+                  "type": "number",
+                  "example": "2024"
+                },
+                "month": {
+                  "type": "number",
+                  "example": 5
+                },
+                "day": {
+                  "type": "number",
+                  "example": 22
+                },
+                "time": {
+                  "type": "string",
+                  "example": "00:16:06"
+                },
+                "_id": {
+                  "type": "string",
+                  "example": "6676eca999b85a80faf5665d"
+                }
+              }
             }
           }
         }
