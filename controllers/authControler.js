@@ -111,6 +111,9 @@ const getAllUsers = async (req, res, next) => {
 const currentUser = async (req, res, next) => {
     try {
         const user = req.user;
+        if (!user) {
+            return res.status(401).send({ message: "Not authorized" });
+        }
         /*Тут має бути перевірка на авторизацію */
         const userProfile = {
             name: user.name,

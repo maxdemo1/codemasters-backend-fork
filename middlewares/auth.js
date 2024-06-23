@@ -30,7 +30,7 @@ export const auth = async (req, res, next) => {
             return res.status(401).send({ message: "Not authorized" });
         }
 
-        req.user = {uid: user._id, sid};
+        req.user = {uid: user._id, sid, ...user.toObject()};
         next();
     } catch (error) {
         console.error("Error verifying token:", error);

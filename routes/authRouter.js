@@ -11,9 +11,9 @@ usersRouter.post("/register", validateBody(registerSchema), userServices.registe
 
 usersRouter.post("/login", validateBody(loginSchema), userServices.login);
 
-usersRouter.post("/logout/", auth, userServices.logout);
+usersRouter.post("/logout", auth, userServices.logout);
 
-usersRouter.get("/current/", auth, userServices.currentUser);
+usersRouter.get("/current", auth, userServices.currentUser);
 
 usersRouter.get("/all", userServices.getAllUsers);
     
