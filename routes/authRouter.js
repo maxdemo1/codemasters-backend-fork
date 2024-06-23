@@ -11,6 +11,6 @@ usersRouter.post("/register", validateBody(registerSchema), authServices.registe
 
 usersRouter.post("/login", validateBody(loginSchema), authServices.login);
 
-usersRouter.post("/logout/", auth, authServices.logout);
+usersRouter.post("/logout", auth, authServices.logout);
 
 export default usersRouter;

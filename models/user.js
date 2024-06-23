@@ -4,7 +4,7 @@ const contactSchema = new mongoose.Schema(
     {
         name: {
             type: String,
-            required: [true, 'User name is required'],
+            
         },
         password: {
             type: String,

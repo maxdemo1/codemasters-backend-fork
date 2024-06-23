@@ -10,11 +10,11 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_TOKEN;
 
 const registerUser = async (req, res, next) => {
     try {
-        const { name, email, password, password_conform } = req.body;
+        const {  email, password, password_conform } = req.body;
         if (password !== password_conform) {
             return res.status(400).json({message: "Passwords dont match. Enter correct!"})
         }
@@ -26,7 +26,7 @@ const registerUser = async (req, res, next) => {
         const verificationToken = cripto.randomUUID();
 
         const passwordHash = await bcrypt.hash(password, 10)
-        const newUser = await User.create({ name, email, password: passwordHash, verificationToken })
+        const newUser = await User.create({ email, password: passwordHash, verificationToken })
         /*Тут має бути граватар */
         /*Тут має бути верифікація емейла */
         res.status(201).json({email: newUser.email, message: "New user is born"})

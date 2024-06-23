@@ -19,14 +19,17 @@ export const auth = async (req, res, next) => {
     const { uid, sid } = jwt.verify(token, JWT_SECRET);
     const user = await User.findById(uid);
 
-    if (!user) {
+    if (!user | !user.token || user.token !== token) {
       return res.status(401).send({ message: "Not authorized" });
     }
 
-    req.user = { uid: user._id, sid };
+    req.user = { uid: user._id, sid, ...user.toObject() };
     next();
   } catch (error) {
     console.error("Error verifying token:", error);
     return res.status(401).send({ message: "Invalid or expired token" });
   }
 };
+
+
+

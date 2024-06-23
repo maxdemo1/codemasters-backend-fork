@@ -5,7 +5,7 @@ import {auth} from "../middlewares/auth.js"
 
 const usersRouter = express.Router();
 
-usersRouter.get("/current/", auth, userServices.currentUser);
+usersRouter.get("/current", auth, userServices.currentUser);
 
 usersRouter.get("/all", userServices.getAllUsers);
     
