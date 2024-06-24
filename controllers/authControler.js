@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken";
 
 
 
+
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_TOKEN;
@@ -97,59 +98,47 @@ const logout = async (req, res, next) => {
 
 }
 
+const refreshToken = async (req, res, next) => {
+    const { refreshToken } = req.body;
 
-// const loginUser = async (req, res, next) => {
-//     try {
-//         const { email, password } = req.body;
-//         const user = await User.findOne({ email });
-        
-//         if (user === null) {
-//             return res.status(401).send({message: "Email or password is wrong"})
-//         }
+    if (!refreshToken) {
+        return res.status(400).send({message: "Refresh token is required"})
+    }
 
-//         const passwordCompare = await bcrypt.compare(password, user.password);
-//         if (passwordCompare === false) {
-//             return res.status(401).send({message: "Email or password is wrong"})
-//         }
-
-//         /*Тут має бути перевірка верифікації */
-
-//         /*Це тимчасовий варіант - буде доданий рефреш токен */
-//         const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "22h" })
-//         await User.findByIdAndUpdate(user._id, { token });
-//         res.status(200).json({token, email: user.email,})
-//     }
-//     catch(error) {
-//         next(error)
-//     }
-// }
-
-// const updateUser = async (req, res, next) => {
-//     try {
-//         const { _id } = req.user;
-//         const { name, email, gender, weight, activeTimeSport, dailyWaterRate, avatarURL } = req.body;
-
-//         const update = await User.findByIdAndUpdate(_id, { name, email, gender, weight, activeTimeSport, dailyWaterRate, avatarURL });/*Я тут шось забув */
-
-//         /*Перевірка??? */
-//         res.status(200).json({
-//             user: {
-//                 name: update.name,
-//                 email: update.email,
-//                 gender: update.gender,
-//                 weight: update.weight,
-//                 activeTimeSport: update.activeTimeSport,
-//                 dailyWaterRate: update.dailyWaterRate,
-//                 avatarURL: update.avatarURL,
-//             },
-//             message: "Woo Hoo!!! You update your profile"
-//         })
-//     }
-//     catch (error) {
-//         next(error);
-//         }
-// }
+    try {
+        if(!Session) {
+            return res.status(401).send({message: "Invalid refresh token"})
+        }
 
 
-const userServices = { registerUser, login, logout };
+        const user = await User.findById(decoded.uid);
+        if (!user) {
+            return res.status(401).send({ message: "User not found" });
+        }
+
+        const newAccessToken = jwt.sign(
+            { uid: user._id, sid: session._id },
+            JWT_SECRET,
+            { expiresIn: "22h" }
+        );
+
+        const newRefreshToken = jwt.sign(
+            { uid: user._id, sid: session._id },
+            JWT_REFRESH_SECRET,
+            { expiresIn: "22h" }
+        );
+
+        return res.status(200).json({accessToken: newAccessToken, refreshToken: newRefreshToken})
+    }
+    
+    catch(error) {
+        next(error)
+    }
+}
+
+
+
+
+
+const userServices = { registerUser, login, logout, refreshToken };
 export default userServices;

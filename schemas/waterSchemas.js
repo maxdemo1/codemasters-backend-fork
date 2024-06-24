@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 const addWaterSchema = Joi.object({
-  amount: Joi.number().min(0.05).max(12).required(),
+  amount: Joi.number().min(50).max(12000).required(),
   year: Joi.number().less(2026).required().greater(2022),
   month: Joi.number()
     .less(12)
@@ -25,7 +25,7 @@ const editWaterSchema = Joi.object({
     "string.length": '"userId" must be a valid 24-character ObjectId',
     "any.required": '"userId" is required',
   }),
-  amount: Joi.number().min(0.05).max(12).required(),
+  amount: Joi.number().min(50).max(12000).required(),
 });
 
 const deleteWaterSchema = Joi.object({

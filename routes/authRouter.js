@@ -13,4 +13,6 @@ usersRouter.post("/login", validateBody(loginSchema), authServices.login);
 
 usersRouter.post("/logout", auth, authServices.logout);
 
+usersRouter.post("/refresh", auth, authServices.refreshToken);
+
 export default usersRouter;
