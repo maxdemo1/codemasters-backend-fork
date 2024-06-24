@@ -98,34 +98,44 @@ const logout = async (req, res, next) => {
 
 }
 
+const refreshToken = async (req, res, next) => {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+        return res.status(400).send({message: "Refresh token is required"})
+    }
+
+    try {
+        if(!Session) {
+            return res.status(401).send({message: "Invalid refresh token"})
+        }
 
 
+        const user = await User.findById(decoded.uid);
+        if (!user) {
+            return res.status(401).send({ message: "User not found" });
+        }
 
-// const loginUser = async (req, res, next) => {
-//     try {
-//         const { email, password } = req.body;
-//         const user = await User.findOne({ email });
-        
-//         if (user === null) {
-//             return res.status(401).send({message: "Email or password is wrong"})
-//         }
+        const newAccessToken = jwt.sign(
+            { uid: user._id, sid: session._id },
+            JWT_SECRET,
+            { expiresIn: "22h" }
+        );
 
-//         const passwordCompare = await bcrypt.compare(password, user.password);
-//         if (passwordCompare === false) {
-//             return res.status(401).send({message: "Email or password is wrong"})
-//         }
+        const newRefreshToken = jwt.sign(
+            { uid: user._id, sid: session._id },
+            JWT_REFRESH_SECRET,
+            { expiresIn: "22h" }
+        );
 
-//         /*Тут має бути перевірка верифікації */
+        return res.status(200).json({accessToken: newAccessToken, refreshToken: newRefreshToken})
+    }
+    
+    catch(error) {
+        next(error)
+    }
+}
 
-//         /*Це тимчасовий варіант - буде доданий рефреш токен */
-//         const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "22h" })
-//         await User.findByIdAndUpdate(user._id, { token });
-//         res.status(200).json({token, email: user.email,})
-//     }
-//     catch(error) {
-//         next(error)
-//     }
-// }
 
 // const updateUser = async (req, res, next) => {
 //     try {
@@ -154,5 +164,5 @@ const logout = async (req, res, next) => {
 // }
 
 
-const userServices = { registerUser, login, logout };
+const userServices = { registerUser, login, logout, refreshToken };
 export default userServices;
