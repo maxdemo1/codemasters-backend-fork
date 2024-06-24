@@ -137,31 +137,7 @@ const refreshToken = async (req, res, next) => {
 }
 
 
-// const updateUser = async (req, res, next) => {
-//     try {
-//         const { _id } = req.user;
-//         const { name, email, gender, weight, activeTimeSport, dailyWaterRate, avatarURL } = req.body;
 
-//         const update = await User.findByIdAndUpdate(_id, { name, email, gender, weight, activeTimeSport, dailyWaterRate, avatarURL });/*Я тут шось забув */
-
-//         /*Перевірка??? */
-//         res.status(200).json({
-//             user: {
-//                 name: update.name,
-//                 email: update.email,
-//                 gender: update.gender,
-//                 weight: update.weight,
-//                 activeTimeSport: update.activeTimeSport,
-//                 dailyWaterRate: update.dailyWaterRate,
-//                 avatarURL: update.avatarURL,
-//             },
-//             message: "Woo Hoo!!! You update your profile"
-//         })
-//     }
-//     catch (error) {
-//         next(error);
-//         }
-// }
 
 
 const userServices = { registerUser, login, logout, refreshToken };

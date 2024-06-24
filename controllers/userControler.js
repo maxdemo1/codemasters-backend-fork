@@ -1,5 +1,8 @@
 import User from "../models/user.js";
+import cloudinary from "../helpers/cloudinary.js";
 
+import path from "node:path";
+import fs from "fs/promises"
 
 const getAllUsers = async (req, res, next) => {
     try {
@@ -31,32 +34,49 @@ const currentUser = async (req, res, next) => {
         }
 }
 
-
-// const loginUser = async (req, res, next) => {
-//     try {
-//         const { email, password } = req.body;
-//         const user = await User.findOne({ email });
+const updateUser = async (req, res, next) => {
+    try {
+        const { _id } = req.user;
         
-//         if (user === null) {
-//             return res.status(401).send({message: "Email or password is wrong"})
-//         }
+        const { name, email, gender, weight, activeTimeSport, dailyWaterRate } = req.body;
+        let avatarURL;
+        if (req.file) {
+            const { path: tempPath, originalname } = req.file;
+            const result = await cloudinary.uploader.upload(tempPath, {
+                folder: "avatars",
+                public_id: path.parse(originalname).name,
+            });
+            fs.unlink(tempPath);
+            avatarURL = result.secure_url;
+        }
+        const updateData = { name, email, gender, weight, activeTimeSport, dailyWaterRate };
+        if (avatarURL) {
+            updateData.avatarURL = avatarURL;
+        }
 
-//         const passwordCompare = await bcrypt.compare(password, user.password);
-//         if (passwordCompare === false) {
-//             return res.status(401).send({message: "Email or password is wrong"})
-//         }
+        const update = await User.findByIdAndUpdate(_id, updateData, {new: true});
 
-//         /*Тут має бути перевірка верифікації */
+        if (!update) {
+            return res.status(404).json({message: "There is no such user"})
+        }
+        res.status(200).json({
+            user: {
+                name: update.name,
+                email: update.email,
+                gender: update.gender,
+                weight: update.weight,
+                activeTimeSport: update.activeTimeSport,
+                dailyWaterRate: update.dailyWaterRate,
+                avatarURL: update.avatarURL,
+            },
+            message: "Woo Hoo!!! You update your profile"
+        })
+    }
+    catch (error) {
+        next(error);
+        }
+}
 
-//         /*Це тимчасовий варіант - буде доданий рефреш токен */
-//         const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "22h" })
-//         await User.findByIdAndUpdate(user._id, { token });
-//         res.status(200).json({token, email: user.email,})
-//     }
-//     catch(error) {
-//         next(error)
-//     }
-// }
 
 // const updateUser = async (req, res, next) => {
 //     try {
@@ -85,5 +105,5 @@ const currentUser = async (req, res, next) => {
 // }
 
 
-const userServices = { currentUser, getAllUsers };
+const userServices = { currentUser, getAllUsers, updateUser };
 export default userServices;
