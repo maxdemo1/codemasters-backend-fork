@@ -1,0 +1,874 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Water Tracker API",
+    "version": "1.0.0",
+    "description": "Water Tracker REST API documentation",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Registration/Login/Logout endpoints"
+    },
+    {
+      "name": "User",
+      "description": "User CRUD endpoints"
+    },
+    {
+      "name": "Water",
+      "description": "Water CRUD endpoints"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register a new user",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegistration"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "409": {
+            "description": "Email in use"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login user",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserLoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Email or password wrong"
+          },
+          "403": {
+            "description": "User is not verified yet"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "summary": "Logout user",
+        "tags": ["Auth"],
+        "responses": {
+          "204": {
+            "description": "Ok"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Email or password wrong"
+          },
+          "403": {
+            "description": "User is not verified yet"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/users/current": {
+      "get": {
+        "summary": "Get current user",
+        "description": "Get current user",
+        "tags": ["User"],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCurrentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "summary": "Get current user",
+        "description": "Get current user",
+        "tags": ["User"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "User id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDataResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Change User data",
+        "description": "Change User data",
+        "tags": ["User"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "User id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "User name",
+                    "example": "Alex"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email",
+                    "example": "alex@example.com"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "description": "Gender",
+                    "enum": ["male", "female", "other"],
+                    "example": "male"
+                  },
+                  "weight": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Weight",
+                    "example": 75.5
+                  },
+                  "active_time": {
+                    "type": "integer",
+                    "description": "Activity time in minutes",
+                    "example": 60
+                  },
+                  "daily_water_intake": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Daily water limit",
+                    "example": 2.5
+                  },
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Avatar image"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserUpdateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/water/add": {
+      "post": {
+        "summary": "Add water reception",
+        "description": "Add water reception",
+        "tags": ["Water"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddWater"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WaterResponse" }
+              }
+            }
+          },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not found" },
+          "500": { "description": "Internal error" }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/water/edit/{id}": {
+      "patch": {
+        "summary": "Edit water reception",
+        "description": "Edit water reception",
+        "tags": ["Water"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Water item database id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditWater"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WaterResponse" }
+              }
+            }
+          },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not found" },
+          "500": { "description": "Internal error" }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/water/delete/{id}": {
+      "delete": {
+        "summary": "Delete water reception",
+        "description": "Delete water reception",
+        "tags": ["Water"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Water item database id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not found" },
+          "500": { "description": "Internal error" }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/water/consumption_day/{day}/month/{month}/year/{year}/": {
+      "get": {
+        "summary": "Get water reception by month",
+        "description": "Get water reception by day",
+        "tags": ["Water"],
+        "parameters": [
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "month",
+            "description": "Months counting starts from 0",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "day",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WaterResponseDay" }
+              }
+            }
+          },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not found" },
+          "500": { "description": "Internal error" }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/water/consumption_month/{month}/year/{year}/": {
+      "get": {
+        "summary": "Get water reception by month",
+        "description": "Get water reception by month",
+        "tags": ["Water"],
+        "parameters": [
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "month",
+            "description": "Months counting starts from 0",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WaterResponseMonth" }
+              }
+            }
+          },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not found" },
+          "500": { "description": "Internal error" }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserRegistration": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Alex",
+            "description": "User name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "alex@example.com",
+            "description": "User email address"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "qwerty",
+            "description": "User password"
+          },
+          "password_conform": {
+            "type": "string",
+            "format": "password",
+            "example": "qwerty",
+            "description": "Confirm password"
+          }
+        },
+        "required": ["name", "email", "password"]
+      },
+      "UserRegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "44226bed73c29e33133f0266"
+              },
+              "email": {
+                "type": "string",
+                "example": "alex@example.com"
+              },
+              "name": {
+                "type": "string",
+                "example": "Alex"
+              },
+              "avatarURL": {
+                "type": "string",
+                "example": "//www.gravatar.com/avatar/0000000000000"
+              }
+            }
+          }
+        }
+      },
+      "UserLogin": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "alex@example.com",
+            "description": "User email address"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "qwerty",
+            "description": "User password"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "UserLoginResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "example": "ggghbGciOiJIUzI1NiIsInR5cCI6Ikpfff..."
+          },
+          "refreshToken": {
+            "example": "gggbGciOiJIUzI1NiIsInR5cCI6Ikpfff..."
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "44226bed73c29e33133f0266"
+              },
+              "email": {
+                "type": "string",
+                "example": "alex@example.com"
+              }
+            }
+          }
+        }
+      },
+
+      "UserDataResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "example": "ggghbGciOiJIUzI1NiIsInR5cCI6Ikpfff..."
+          },
+          "refreshToken": {
+            "example": "gggbGciOiJIUzI1NiIsInR5cCI6Ikpfff..."
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "44226bed73c29e33133f0266"
+              },
+              "email": {
+                "type": "string",
+                "example": "alex@example.com"
+              },
+              "name": {
+                "type": "string",
+                "example": "Alex"
+              },
+              "avatarURL": {
+                "type": "string",
+                "example": "//www.gravatar.com/avatar/0000000000000"
+              }
+            }
+          }
+        }
+      },
+      "UserCurrentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "00226b9a73c29e33133f0200"
+          },
+          "email": {
+            "type": "string",
+            "example": "alex@example.com"
+          },
+          "name": {
+            "type": "string",
+            "example": "Alex"
+          },
+          "avatarURL": {
+            "type": "string",
+            "example": "//www.gravatar.com/avatar/000000000000000000"
+          },
+          "themeId": {
+            "type": "string",
+            "example": "7725452c0713afbc276181f8"
+          }
+        }
+      },
+      "UserUpdateResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "99226b9a73c29e33133f0299"
+          },
+          "email": {
+            "type": "string",
+            "example": "alex@example.com"
+          },
+          "name": {
+            "type": "string",
+            "example": "Alex"
+          },
+          "avatarURL": {
+            "type": "string",
+            "example": "//www.gravatar.com/avatar/0000000000000000000000"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "example": [
+              {
+                "403": "Your current password is not valid"
+              }
+            ]
+          }
+        }
+      },
+      "AddWater": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 0.5,
+            "description": "Amount of water"
+          },
+          "year": {
+            "type": "number",
+            "example": 2024,
+            "description": "Year"
+          },
+          "month": {
+            "type": "number",
+            "example": 0,
+            "description": "User password"
+          },
+          "day": {
+            "type": "number",
+            "example": 1,
+            "description": "Confirm password"
+          },
+          "time": {
+            "type": "string",
+            "example": "00:16:06",
+            "description": "Confirm password"
+          }
+        },
+        "required": ["amount", "year", "month", "time"]
+      },
+
+      "EditWater": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 0.5,
+            "description": "Amount of water"
+          }
+        },
+        "required": ["amount"]
+      },
+      "DeleteWater": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 0.5,
+            "description": "Amount of water"
+          }
+        },
+        "required": ["amount"]
+      },
+      "WaterResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "owner_id": {
+                "type": "string",
+                "example": "66755b1814ecb34b3d42a997"
+              },
+              "amount": {
+                "type": "number",
+                "example": 0.5
+              },
+              "year": {
+                "type": "number",
+                "example": "2024"
+              },
+              "month": {
+                "type": "number",
+                "example": 5
+              },
+              "day": {
+                "type": "number",
+                "example": 22
+              },
+              "time": {
+                "type": "string",
+                "example": "00:16:06"
+              },
+              "_id": {
+                "type": "string",
+                "example": "6676eca999b85a80faf5665d"
+              }
+            }
+          }
+        }
+      },
+      "WaterResponseDay": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "owner_id": {
+                  "type": "string",
+                  "example": "66755b1814ecb34b3d42a997"
+                },
+                "amount": {
+                  "type": "number",
+                  "example": 0.5
+                },
+                "year": {
+                  "type": "number",
+                  "example": "2024"
+                },
+                "month": {
+                  "type": "number",
+                  "example": 5
+                },
+                "day": {
+                  "type": "number",
+                  "example": 22
+                },
+                "time": {
+                  "type": "string",
+                  "example": "00:16:06"
+                },
+                "_id": {
+                  "type": "string",
+                  "example": "6676eca999b85a80faf5665d"
+                }
+              }
+            }
+          }
+        }
+      },
+      "WaterResponseMonth": {
+        "type": "object",
+        "properties": {
+          "days": {
+            "type": "number",
+            "example": 31
+          },
+          "1": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "owner_id": {
+                  "type": "string",
+                  "example": "66755b1814ecb34b3d42a997"
+                },
+                "amount": {
+                  "type": "number",
+                  "example": 0.5
+                },
+                "year": {
+                  "type": "number",
+                  "example": 2024
+                },
+                "month": {
+                  "type": "number",
+                  "example": 5
+                },
+                "day": {
+                  "type": "number",
+                  "example": 22
+                },
+                "time": {
+                  "type": "string",
+                  "example": "00:16:06"
+                },
+                "_id": {
+                  "type": "string",
+                  "example": "6676eca999b85a80faf5665d"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

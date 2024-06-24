@@ -10,11 +10,11 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const JWT_REFRESH_TOKEN = process.env.JWT_REFRESH_TOKEN;
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_TOKEN;
 
 const registerUser = async (req, res, next) => {
     try {
-        const { email, password, password_conform } = req.body;
+        const {  email, password, password_conform } = req.body;
         if (password !== password_conform) {
             return res.status(400).json({message: "Passwords dont match. Enter correct!"})
         }
@@ -61,7 +61,7 @@ const login = async (req, res, next) => {
   
   const refreshToken = jwt.sign(
     { uid: user._id, sid: newSession._id },
-    JWT_REFRESH_TOKEN,
+      JWT_REFRESH_SECRET,
     { expiresIn: "22h" }
         );
         
@@ -97,66 +97,44 @@ const logout = async (req, res, next) => {
 
 }
 
+const refreshToken = async (req, res, next) => {
+    const { refreshToken } = req.body;
 
-const getAllUsers = async (req, res, next) => {
-    try {
-        const users = await User.find();
-        res.status(200).json(users);
-    } catch (error) {
-        next(error);
+    if (!refreshToken) {
+        return res.status(400).send({message: "Refresh token is required"})
     }
-};
 
-
-const currentUser = async (req, res, next) => {
     try {
-        const user = req.user;
+        if(!Session) {
+            return res.status(401).send({message: "Invalid refresh token"})
+        }
+
+
+        const user = await User.findById(decoded.uid);
         if (!user) {
-            return res.status(401).send({ message: "Not authorized" });
+            return res.status(401).send({ message: "User not found" });
         }
-        /*Тут має бути перевірка на авторизацію */
-        const userProfile = {
-            name: user.name,
-            email: user.email,
-            gender: user.gender,
-            weight: user.weight,
-            activeTimeSport: user.activeTimeSport,
-            dailyWaterRate: user.dailyWaterRate,
-            avatarURL: user.avatarURL,
-        }
-        res.status(200).json(userProfile);
+
+        const newAccessToken = jwt.sign(
+            { uid: user._id, sid: session._id },
+            JWT_SECRET,
+            { expiresIn: "22h" }
+        );
+
+        const newRefreshToken = jwt.sign(
+            { uid: user._id, sid: session._id },
+            JWT_REFRESH_SECRET,
+            { expiresIn: "22h" }
+        );
+
+        return res.status(200).json({accessToken: newAccessToken, refreshToken: newRefreshToken})
     }
-    catch (error) {
-        next(error);
-        }
+    
+    catch(error) {
+        next(error)
+    }
 }
 
-
-// const loginUser = async (req, res, next) => {
-//     try {
-//         const { email, password } = req.body;
-//         const user = await User.findOne({ email });
-        
-//         if (user === null) {
-//             return res.status(401).send({message: "Email or password is wrong"})
-//         }
-
-//         const passwordCompare = await bcrypt.compare(password, user.password);
-//         if (passwordCompare === false) {
-//             return res.status(401).send({message: "Email or password is wrong"})
-//         }
-
-//         /*Тут має бути перевірка верифікації */
-
-//         /*Це тимчасовий варіант - буде доданий рефреш токен */
-//         const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "22h" })
-//         await User.findByIdAndUpdate(user._id, { token });
-//         res.status(200).json({token, email: user.email,})
-//     }
-//     catch(error) {
-//         next(error)
-//     }
-// }
 
 // const updateUser = async (req, res, next) => {
 //     try {
@@ -185,5 +163,5 @@ const currentUser = async (req, res, next) => {
 // }
 
 
-const userServices = { registerUser, login, logout, currentUser, getAllUsers };
+const userServices = { registerUser, login, logout, refreshToken };
 export default userServices;
