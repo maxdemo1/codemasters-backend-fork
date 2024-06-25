@@ -17,7 +17,7 @@
   "tags": [
     {
       "name": "Auth",
-      "description": "Registration/Login/Logout endpoints"
+      "description": "Auth endpoints"
     },
     {
       "name": "User",
@@ -144,47 +144,16 @@
           "400": {
             "description": "Invalid input"
           }
-        }
-      }
-    },
-    "/users/{id}": {
-      "get": {
-        "summary": "Get current user",
-        "description": "Get current user",
-        "tags": ["User"],
-        "parameters": [
-          {
-            "name": "id",
-            "description": "User id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserDataResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "User not found"
-          }
         },
         "security": [
           {
             "bearerAuth": []
           }
         ]
-      },
-      "put": {
+      }
+    },
+      "/users/update": {
+      "patch": {
         "summary": "Change User data",
         "description": "Change User data",
         "tags": ["User"],
@@ -496,11 +465,6 @@
       "UserRegistration": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string",
-            "example": "Alex",
-            "description": "User name"
-          },
           "email": {
             "type": "string",
             "format": "email",
@@ -528,21 +492,13 @@
           "user": {
             "type": "object",
             "properties": {
-              "id": {
-                "type": "string",
-                "example": "44226bed73c29e33133f0266"
-              },
               "email": {
                 "type": "string",
                 "example": "alex@example.com"
               },
-              "name": {
+              "message": {
                 "type": "string",
-                "example": "Alex"
-              },
-              "avatarURL": {
-                "type": "string",
-                "example": "//www.gravatar.com/avatar/0000000000000"
+                "example": ""
               }
             }
           }
@@ -569,8 +525,8 @@
       "UserLoginResponse": {
         "type": "object",
         "properties": {
-          "accessToken": {
-            "example": "ggghbGciOiJIUzI1NiIsInR5cCI6Ikpfff..."
+          "token": {
+            "example": "NiIsInR5cCI6IkpfffggghbGciOiJIUzI1..."
           },
           "refreshToken": {
             "example": "gggbGciOiJIUzI1NiIsInR5cCI6Ikpfff..."
@@ -578,13 +534,17 @@
           "user": {
             "type": "object",
             "properties": {
-              "id": {
+              "name": {
                 "type": "string",
-                "example": "44226bed73c29e33133f0266"
+                "example": "Alex"
               },
               "email": {
                 "type": "string",
                 "example": "alex@example.com"
+              },
+              "avatarURL": {
+                "type": "string",
+                "example": "//www.gravatar.com/avatar/0000000000000"
               }
             }
           }
@@ -641,10 +601,6 @@
           "avatarURL": {
             "type": "string",
             "example": "//www.gravatar.com/avatar/000000000000000000"
-          },
-          "themeId": {
-            "type": "string",
-            "example": "7725452c0713afbc276181f8"
           }
         }
       },
