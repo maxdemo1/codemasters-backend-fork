@@ -133,3 +133,4 @@ dist
 
 tmp/*
 !tmp/.gitkeep
+.vercel
