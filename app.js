@@ -3,8 +3,8 @@ import mongoose from "mongoose";
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
-import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from './swagger.js';
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "./swagger.js";
 
 import authRouter from "./routes/authRouter.js";
 import usersRouter from "./routes/userRouter.js";
@@ -43,3 +43,4 @@ mongoose
     console.error("Database connection error", error);
     process.exit(1);
   });
+export default app;
